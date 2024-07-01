@@ -1,0 +1,32 @@
+# Define a dictionary of rules and responses
+rules = {
+    "hello": "Hello! How can I assist you today?",
+    "how should i spend my rest of the day": "Well going outside with friends or watching movie and chill",
+    "how are you": "I'm doing well, thanks! How about you?",
+    "what's your name": "I'm ChatBot, nice to meet you!",
+    "how many languages you know" : "English, Marathi, Hindi",
+    "coding languages?" : "c, c++, java, Ruby, Python, JavaScript, PHP, HTML, CSS, Kotlin",
+    "quit": "Goodbye! It was nice chatting with you.",
+    "default": "I didn't understand that. Please try again."
+}
+
+def respond(user_input):
+    # Convert user input to lowercase
+    user_input = user_input.lower()
+    
+    # Check if the user input matches a rule
+    for rule in rules:
+        if rule in user_input:
+            return rules[rule]
+    
+    # If no rule matches, return the default response
+    return rules["default"]
+
+# Start the chatbot
+while True:
+    user_input = input("You: ")
+    if user_input.lower() == "quit":
+        print("ChatBot:", rules["quit"])
+        break
+    else:
+        print("ChatBot:", respond(user_input))

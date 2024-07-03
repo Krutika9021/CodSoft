@@ -1,0 +1,40 @@
+import pandas as pd
+from sklearn.neighbors import NearestNeighbors
+from sklearn.metrics.pairwise import cosine_similarity
+
+# Sample dataset
+ratings = {
+    'User': [1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5],
+    'Movie': [1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3],
+    'Rating': [5, 4, 3, 4, 5, 2, 3, 2, 1, 5, 4, 3, 4, 5, 2]
+}
+
+df = pd.DataFrame(ratings)
+
+
+user_matrix = df.pivot(index='User', columns='Movie', values='Rating').fillna(0)
+
+
+nn = NearestNeighbors(n_neighbors=5, algorithm='brute', metric='cosine')
+nn.fit(user_matrix)
+
+def recommend_movies_cf(user_id, num_recommendations=5):
+   
+    distances, indices = nn.kneighbors([user_matrix.loc[user_id]])
+
+   
+    neighbor_ratings = user_matrix.iloc[indices[0][1:]]
+
+   
+    weighted_ratings = neighbor_ratings.apply(lambda x: x * (1 - distances[0][1:])).sum()
+
+    
+    recommended_movies = weighted_ratings.sort_values(ascending=False).head(num_recommendations)
+
+    return recommended_movies.index.tolist()
+
+
+recommended_movies = recommend_movies_cf(1)
+print("Recommended movies for user 1:", recommended_movies)
+
+
